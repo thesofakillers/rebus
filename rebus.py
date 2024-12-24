@@ -33,18 +33,21 @@ def same_meaning(word_a: str, word_b: str) -> bool:
     return False
 
 
-def find_substrings(candidate: list[str]) -> list[str]:
+def find_substrings(candidate: str) -> list[str]:
     candidate_chars = [char for char in candidate if char.isalpha()]
 
     substring_positions = []
     num_chars = len(candidate_chars)
 
+    min_length = 2
+
     start = 0
     while start < num_chars:
         found_substring = False
-        for length in range(start + 1, num_chars - start + 1):
-            substring = candidate_chars[start : start + length]
-            if not is_word(substring):
+        # TODO: this isn't working since we added min_length
+        for length in range(max(min_length, start + 1), num_chars - start + 1):
+            substring = "".join(candidate_chars[start : start + length])
+            if not is_physical_noun(substring):
                 continue
             parent_word = get_parent_word(start, start + length, candidate)
             if substring == parent_word:
@@ -87,3 +90,9 @@ def get_parent_word(start_idx: int, end_idx: int, candidate: str) -> str:
         continue  # to the next word
 
     return ""  # Substring spans multiple words
+
+
+if __name__ == "__main__":
+    candidate = "hello world"
+    substrings = find_substrings(candidate)
+    print(substrings)
