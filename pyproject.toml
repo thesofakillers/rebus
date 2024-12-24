@@ -1,0 +1,7 @@
+[project]
+name = "rebus"
+version = "0.1.0"
+description = "A truly multi-modal language-vision cloze test"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
