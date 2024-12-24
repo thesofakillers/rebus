@@ -1,12 +1,15 @@
 from nltk.corpus import wordnet
 
 
-
-def is_word(substring: str) -> bool:
+def is_physical_noun(substring: str) -> bool:
     """
-    Checks if the given substring is a valid word
+    Checks if a substring is a physical word
+    e.g. "hello" is not a noun
+    e.g. "introspection" is a noun, but not physical
+    "apple", "tree", "idea", "dog" are physical nouns
+    i.e. things that can be represented visually
     """
-    raise NotImplementedError("is_word not implemented yet")
+    raise NotImplementedError
 
 
 def same_meaning(word_a: str, word_b: str) -> bool:
