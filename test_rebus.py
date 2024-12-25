@@ -61,3 +61,16 @@ def test_get_parent_word_specific_cases():
     # Test with newline separators
     assert get_parent_word(0, 2, "hello\nworld") == "hello"
 
+
+def test_get_parent_word_specific_cases():
+    # Test with mixed case
+    assert get_parent_word(0, 2, "HeLLo WoRLD") == "HeLLo"
+
+    # Test with unicode characters
+    assert get_parent_word(0, 2, "café world") == "café"
+
+    # Test with tab separators
+    assert get_parent_word(0, 2, "hello\tworld") == "hello"
+
+    # Test with newline separators
+    assert get_parent_word(0, 2, "hello\nworld") == "hello"
