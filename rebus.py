@@ -195,6 +195,22 @@ async def eval_ivw():
     Evaluates the `is_visual_word` function
     """
     test_cases = [
+        # Hard edge cases that should be False
+        ("between", False),  # requires context/reference points
+        ("inside", False),  # spatial relationship, needs context
+        ("through", False),  # motion/spatial relationship
+        ("almost", False),  # abstract concept of nearness
+        ("during", False),  # temporal concept
+        ("while", False),  # temporal relationship
+        ("because", False),  # causation is abstract
+        ("about", False),  # approximation/relation
+        ("without", False),  # absence is hard to draw directly
+        ("versus", False),  # comparison needs context
+        ("either", False),  # choice/alternative is abstract
+        ("rather", False),  # preference is abstract
+        ("among", False),  # spatial relationship needs context
+        ("within", False),  # spatial/temporal relationship
+        ("beyond", False),  # relative position needs context
         # Concrete nouns (should be visual)
         ("apple", True),
         ("tree", True),
