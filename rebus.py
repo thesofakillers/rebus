@@ -147,24 +147,31 @@ async def find_substrings(candidate: str) -> list[str]:
 
     start = 0
     while start < num_chars:
-        found_substring = False
+        last_found_valid = None
         remaining = num_chars - start
+
+        # Try increasingly longer substrings until we find an invalid one
         for length in range(min_length, remaining + 1):
             substring = "".join(candidate_chars[start : start + length])
             parent_word = get_parent_word(start, start + length, candidate)
+
             if substring == parent_word:
                 continue
             if same_meaning(substring, parent_word):
                 continue
-            if not await is_visual_word(substring):
-                continue
 
-            substring_positions.append((substring, (start, start + length)))
-            start = start + length
-            found_substring = True
-            break
+            is_valid = await is_visual_word(substring)
+            if is_valid:
+                last_found_valid = (substring, (start, start + length))
+            elif last_found_valid is not None:
+                # If we found an invalid substring and we have a previous valid one,
+                # we can stop looking for longer substrings
+                break
 
-        if not found_substring:
+        if last_found_valid:
+            substring_positions.append(last_found_valid)
+            start = last_found_valid[1][1]  # Move start to after the found substring
+        else:
             start += 1  # Only advance by 1 if no substring was found
 
     return substring_positions
