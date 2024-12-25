@@ -220,7 +220,7 @@ async def eval_ivw():
         ("book", True),
         # Abstract nouns (should not be visual)
         ("love", True),  # easy to visualize -- draw a heart
-        ("happiness", True), # easy to visualize -- draw a smiley face
+        ("happiness", True),  # easy to visualize -- draw a smiley face
         ("theory", False),
         ("wisdom", False),
         ("freedom", False),
@@ -231,7 +231,7 @@ async def eval_ivw():
         ("dance", True),
         ("climb", True),
         # Non-visual verbs
-        ("think", False),  # kinda hard to draw, lean no
+        ("think", True),  # just draw a thought bubble or a thinking statue pose
         ("believe", False),
         ("understand", False),
         ("hope", False),
@@ -257,11 +257,11 @@ async def eval_ivw():
         ("the", False),  # Articles
         ("and", False),  # Conjunctions
         # Words with multiple meanings (should return True if any meaning is visual)
-        ("bank", False),  # kinda hard to draw, lean no
+        ("bank", True),  # just draw a building with a dollar sign
         ("spring", True),  # Can be a season, water source, or mechanical device
         ("light", True),  # Can be physical illumination or metaphorical
         # Technical/scientific terms
-        ("molecule", False),  # hard to visualize
+        ("molecule", True),  # just draw like H20 or something
         ("atom", True),  # just draw the lil orbital thing
         ("gravity", False),  # hard to visualize, lean no
         # Nature-related
