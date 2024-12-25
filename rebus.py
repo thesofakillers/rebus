@@ -294,6 +294,10 @@ async def eval_ivw():
         ("heart", True),
     ]
 
+    true_positives = 0
+    true_negatives = 0
+    false_positives = 0
+    false_negatives = 0
     errors = []
     total = len(test_cases)
 
@@ -303,29 +307,56 @@ async def eval_ivw():
     # Run all tasks concurrently
     results = await tqdm_asyncio.gather(*tasks)
 
-    # Compare results with expected values
-    correct = sum(
-        1 for (_, expected), result in zip(test_cases, results) if result == expected
+    for (word, expected), result in zip(test_cases, results):
+        if result == expected:
+            if result:
+                true_positives += 1
+            else:
+                true_negatives += 1
+        else:
+            if result:  # Got True when should be False
+                false_positives += 1
+            else:  # Got False when should be True
+                false_negatives += 1
+            errors.append(f"'{word}': expected {expected}, got {result}")
+
+    total_actual_positive = sum(1 for _, expected in test_cases if expected)
+    total_actual_negative = total - total_actual_positive
+
+    accuracy = ((true_positives + true_negatives) / total) * 100
+    false_positive_rate = (
+        (false_positives / total_actual_negative * 100)
+        if total_actual_negative > 0
+        else 0
+    )
+    false_negative_rate = (
+        (false_negatives / total_actual_positive * 100)
+        if total_actual_positive > 0
+        else 0
     )
 
-    # Collect errors
-    errors = [
-        f"'{word}': expected {expected}, got {result}"
-        for (word, expected), result in zip(test_cases, results)
-        if result != expected
-    ]
-
-    accuracy = (correct / total) * 100
+    print("\nMetrics:")
+    print(
+        f"Accuracy: {accuracy:.1f}% ({true_positives + true_negatives}/{total} correct)"
+    )
+    print(
+        f"False Positive Rate: {false_positive_rate:.1f}% ({false_positives}/{total_actual_negative} cases)"
+    )
+    print(
+        f"False Negative Rate: {false_negative_rate:.1f}% ({false_negatives}/{total_actual_positive} cases)"
+    )
 
     if errors:
         print("\nErrors found:")
         for error in errors:
             print(f"  {error}")
 
-    print(f"\nAccuracy: {accuracy:.1f}% ({correct}/{total} correct)")
-
 
 if __name__ == "__main__":
-    substrings = asyncio.run(find_substrings("carpenter ants marching"))
+    # substrings = asyncio.run(find_substrings("carpenter ants marching"))
+    # substrings = asyncio.run(find_substrings("garden flowers blooming"))
+    # substrings = asyncio.run(is_visual_word("gar"))
+    # substrings = asyncio.run(is_visual_word("den"))
+    # print(substrings)
 
-    print(substrings)
+    asyncio.run(eval_ivw())
