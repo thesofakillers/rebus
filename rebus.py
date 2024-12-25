@@ -190,7 +190,10 @@ def get_parent_word(start_idx: int, end_idx: int, candidate: str) -> str:
     return ""  # Substring spans multiple words
 
 
-async def main():
+async def eval_ivw():
+    """
+    Evaluates the `is_visual_word` function
+    """
     test_cases = [
         # Concrete nouns (should be visual)
         ("apple", True),
@@ -295,4 +298,6 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    substrings = asyncio.run(find_substrings("carpenter ants marching"))
+
+    print(substrings)
