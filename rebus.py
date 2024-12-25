@@ -22,12 +22,6 @@ ANTHROPIC_TIMEOUT_EXCEPTIONS = (
 
 client = anthropic.AsyncAnthropic(max_retries=0)
 
-IS_WORD_PROMPT = """Is the word "{word}" something that can be straightforwardly represented in a drawing?
-
-Rules for "drawable" words:
-- Must be recognizable without text or context
-- Should be interpretable by most viewers
-- Should have a consistent visual representation
 IS_WORD_PROMPT = """You will be presented with a word and asked to determine if it can
 be straightforwardly generated ("drawn") by a text-to-image model like Stable Diffusion, DALL-E,
 or Midjourney.
