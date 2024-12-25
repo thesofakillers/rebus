@@ -1,5 +1,5 @@
 import pytest
-from rebus import get_parent_word
+from rebus.rebus import get_parent_word
 
 
 @pytest.mark.parametrize(
