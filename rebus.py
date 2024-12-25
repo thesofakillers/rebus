@@ -145,12 +145,12 @@ async def find_substrings(candidate: str) -> list[str]:
         remaining = num_chars - start
         for length in range(min_length, remaining + 1):
             substring = "".join(candidate_chars[start : start + length])
-            if not await is_visual_word(substring):
-                continue
             parent_word = get_parent_word(start, start + length, candidate)
             if substring == parent_word:
                 continue
             if same_meaning(substring, parent_word):
+                continue
+            if not await is_visual_word(substring):
                 continue
 
             substring_positions.append((substring, (start, start + length)))
