@@ -1,20 +1,8 @@
 import asyncio
-from dataclasses import dataclass
 
 from rebus.word.wordnet import same_meaning
 from rebus.word.llm import is_visual_word
-
-
-@dataclass
-class RebusSubstring:
-    text: str  # the substring itself
-    start: int  # start index in the rebus phrase (without spaces)
-    stop: int  # stop index in the rebus phrase (without spaces)
-
-@dataclass
-class RebusPuzzle:
-    phrase: str
-    substrings: list[RebusSubstring]
+from rebus.structs import RebusSubstring
 
 
 async def find_substrings(candidate: str) -> list[RebusSubstring]:
@@ -42,7 +30,9 @@ async def find_substrings(candidate: str) -> list[RebusSubstring]:
 
             is_valid = await is_visual_word(substring)
             if is_valid:
-                last_found_valid = RebusSubstring(text=substring, start=start, stop=start + length)
+                last_found_valid = RebusSubstring(
+                    text=substring, start=start, stop=start + length
+                )
             elif last_found_valid is not None:
                 # If we found an invalid substring and we have a previous valid one,
                 # we can stop looking for longer substrings
