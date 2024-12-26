@@ -1,13 +1,26 @@
 import asyncio
+from dataclasses import dataclass
 
 from rebus.word.wordnet import same_meaning
 from rebus.word.llm import is_visual_word
 
 
-async def find_substrings(candidate: str) -> list[str]:
+@dataclass
+class RebusSubstring:
+    text: str  # the substring itself
+    start: int  # start index in the rebus phrase (without spaces)
+    stop: int  # stop index in the rebus phrase (without spaces)
+
+@dataclass
+class RebusPuzzle:
+    phrase: str
+    substrings: list[RebusSubstring]
+
+
+async def find_substrings(candidate: str) -> list[RebusSubstring]:
     candidate_chars = [char for char in candidate if char.isalpha()]
 
-    substring_positions = []
+    rebus_substrings = []
     num_chars = len(candidate_chars)
 
     min_length = 2
@@ -29,19 +42,19 @@ async def find_substrings(candidate: str) -> list[str]:
 
             is_valid = await is_visual_word(substring)
             if is_valid:
-                last_found_valid = (substring, (start, start + length))
+                last_found_valid = RebusSubstring(text=substring, start=start, stop=start + length)
             elif last_found_valid is not None:
                 # If we found an invalid substring and we have a previous valid one,
                 # we can stop looking for longer substrings
                 break
 
         if last_found_valid:
-            substring_positions.append(last_found_valid)
-            start = last_found_valid[1][1]  # Move start to after the found substring
+            rebus_substrings.append(last_found_valid)
+            start = last_found_valid.stop  # Move start to after the found substring
         else:
             start += 1  # Only advance by 1 if no substring was found
 
-    return substring_positions
+    return rebus_substrings
 
 
 def get_parent_word(start_idx: int, end_idx: int, candidate: str) -> str:
