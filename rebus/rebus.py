@@ -1,11 +1,32 @@
 import asyncio
+import logging
 
-from rebus.word.wordnet import same_meaning
+from rebus.word.wordnet import same_meaning, is_word
 from rebus.word.llm import is_visual_word
 from rebus.structs import RebusSubstring
 
+logger = logging.getLogger(__name__)
+
+
+async def is_valid_substring(substring: str, parent_word: str) -> bool:
+    """Check if a substring is valid for rebus purposes."""
+    if not is_word(substring):
+        logger.debug("%r is not a word", substring)
+        return False
+
+    if substring == parent_word or same_meaning(substring, parent_word):
+        logger.debug("%r has same meaning as parent word %r", substring, parent_word)
+        return False
+
+    if not await is_visual_word(substring):
+        logger.debug("%r is not a visual word", substring)
+        return False
+
+    return True
+
 
 async def find_substrings(candidate: str) -> list[RebusSubstring]:
+    """Find valid rebus substrings within a candidate string."""
     candidate_chars = [char for char in candidate if char.isalpha()]
 
     rebus_substrings = []
@@ -23,20 +44,17 @@ async def find_substrings(candidate: str) -> list[RebusSubstring]:
             substring = "".join(candidate_chars[start : start + length])
             parent_word = get_parent_word(start, start + length, candidate)
 
-            if substring == parent_word:
-                continue
-            if same_meaning(substring, parent_word):
-                continue
-
-            is_valid = await is_visual_word(substring)
-            if is_valid:
+            logger.debug("Checking substring: %r", substring)
+            if await is_valid_substring(substring, parent_word):
+                logger.debug("Found valid substring: %r; checking next char", substring)
                 last_found_valid = RebusSubstring(
                     text=substring, start=start, stop=start + length
                 )
-            elif last_found_valid is not None:
-                # If we found an invalid substring and we have a previous valid one,
-                # we can stop looking for longer substrings
-                break
+            elif last_found_valid:
+                logger.debug("Found invalid substring; jumping start")
+                break  # Stop if we hit an invalid substring after finding a valid one
+            else:
+                continue
 
         if last_found_valid:
             rebus_substrings.append(last_found_valid)
@@ -74,6 +92,12 @@ def get_parent_word(start_idx: int, end_idx: int, candidate: str) -> str:
 
 
 if __name__ == "__main__":
+    # Set up logging
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
+
     # substrings = asyncio.run(find_substrings("carpenter ants marching"))
-    substrings = asyncio.run(find_substrings("garden flowers blooming"))
-    print(substrings)
+    substrings = asyncio.run(find_substrings("garden flower blooming"))
+    logger.info("Found substrings: %s", substrings)

@@ -35,6 +35,7 @@ async def _ask_if_visual_word(word: str) -> bool:
         max_tokens=256,
     )
     response_text = response.content[0].text
+    # print(response_text)
 
     # Extract answer using regex
     if match := re.search(r"<answer>?(yes|no)?</answer>", response_text.lower()):
@@ -52,17 +53,11 @@ async def is_visual_word(substring: str) -> bool:
     negative examples: "hello" "introspection"
     positive examples: "apple", "idea", "upright", "running"
     """
-
     substring = substring.strip().lower()
 
     # Check cache first
     if substring in visual_word_cache:
         return visual_word_cache[substring]
-
-    # Check if it's a valid word using WordNet
-    if not wordnet.synsets(substring):
-        visual_word_cache[substring] = False
-        return False
 
     result = await _ask_if_visual_word(substring)
     visual_word_cache[substring] = result

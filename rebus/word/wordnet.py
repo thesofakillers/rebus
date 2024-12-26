@@ -19,3 +19,9 @@ def same_meaning(word_a: str, word_b: str) -> bool:
                 return True
 
     return False
+
+def is_word(substring: str) -> bool:
+    """
+    Checks if the given substring is a word
+    """
+    return bool(wordnet.synsets(substring.lower()))
