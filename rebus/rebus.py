@@ -5,7 +5,12 @@ from rebus.word.wordnet import same_meaning, is_word
 from rebus.word.llm import is_visual_word
 from rebus.structs import RebusSubstring
 
+logging.basicConfig(
+    level=logging.WARNING, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.WARNING)
 
 
 async def is_valid_substring(substring: str, parent_word: str) -> bool:
@@ -100,4 +105,4 @@ if __name__ == "__main__":
 
     # substrings = asyncio.run(find_substrings("carpenter ants marching"))
     substrings = asyncio.run(find_substrings("garden flower blooming"))
-    logger.info("Found substrings: %s", substrings)
+    print("Found substrings: %s", substrings)
