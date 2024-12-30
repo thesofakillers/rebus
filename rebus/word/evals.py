@@ -81,7 +81,8 @@ async def eval_ivw():
         ("gravity", False),  # hard to visualize, lean no
         # Nature-related
         ("cloud", True),
-        ("wind", True),
+        ("wind", False),
+        ("flow", False),
         ("thunder", True),
         ("lightning", True),
         ("rain", True),

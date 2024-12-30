@@ -7,7 +7,7 @@ EXAMPLES BY CATEGORY:
 Physical Things; these are usually "drawable":
 - "apple" -> clear round fruit shape -> <answer>yes</answer>
 - "book" -> rectangular object with pages -> <answer>yes</answer>
-- "breeze" -> just draw some flowy lines -> <answer>yes</answer>
+- "breeze" -> hard to visualize without showing another subject -> <answer>no</answer>
 - "mixer" -> just draw kitchen appliance with beaters -> <answer>yes</answer>
 
 Actions; these are sometimes "drawable", a good heuristic here is whether a person could be drawn doing the action:
