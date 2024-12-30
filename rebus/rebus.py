@@ -30,6 +30,40 @@ async def is_valid_substring(substring: str, parent_word: str) -> bool:
     return True
 
 
+def has_potential_suffix(chars: list[str], start: int, length: int) -> bool:
+    """Check if adding more characters could form a common suffix like -ed or -ing."""
+    remaining = len(chars) - (start + length)
+    if remaining < 1:
+        return False
+
+    next_chars = "".join(chars[start + length : start + length + 3])
+
+    suffix_groups = [
+        ["ed"],  # ed -> d
+        ["ing"],  # ing -> ng -> g
+        ["es", "ies"],  # es/ies -> s
+        ["er"],  # er -> r
+        ["est"],  # est -> st -> t
+        ["ful"],  # ful -> ul -> l
+        ["less"],  # less -> ess -> ss -> s
+        ["able", "ible"],  # able/ible -> ble -> le -> e
+        ["ly"],  # ly -> y
+        ["ment"],  # ment -> ent -> nt -> t
+        ["ness"],  # ness -> ess -> ss -> s
+        ["tion", "sion"],  # tion/sion -> ion -> on -> n
+    ]
+
+    # Generate all possible partial suffixes
+    potential_suffixes = set()
+    for group in suffix_groups:
+        for suffix in group:
+            potential_suffixes.add(suffix)
+            for i in range(1, len(suffix)):
+                potential_suffixes.add(suffix[i:])
+
+    return any(next_chars.startswith(suffix) for suffix in potential_suffixes)
+
+
 async def find_substrings(candidate: str) -> list[RebusSubstring]:
     """Find valid rebus substrings within a candidate string."""
     candidate_chars = [char for char in candidate if char.isalpha()]
@@ -56,6 +90,12 @@ async def find_substrings(candidate: str) -> list[RebusSubstring]:
                     text=substring, start=start, stop=start + length
                 )
             elif last_found_valid:
+                # Check if we should continue due to potential suffix
+                if has_potential_suffix(candidate_chars, start, length):
+                    logger.debug(
+                        "Found potential suffix after %r; continuing", substring
+                    )
+                    continue
                 logger.debug("Found invalid substring; jumping start")
                 break  # Stop if we hit an invalid substring after finding a valid one
             else:
