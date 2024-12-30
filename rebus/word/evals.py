@@ -48,6 +48,8 @@ async def eval_ivw():
         ("believe", False),
         ("understand", False),
         ("hope", False),
+        ("looming", False),  # hard to visualize, lean no
+        ("loom", True), # has a noun homonym which is physical and therefore visual
         # Visual adjectives (describing physical appearance)
         ("red", False),  # hard to visualize
         ("tall", False),  # need context to visualize

@@ -66,3 +66,4 @@ if __name__ == "__main__":
     import asyncio
     print("is_visual_word(gar)", asyncio.run(is_visual_word("gar")))
     print("is_visual_word(den)", asyncio.run(is_visual_word("den")))
+    print("is_visual_word(looming)", asyncio.run(is_visual_word("looming")))
